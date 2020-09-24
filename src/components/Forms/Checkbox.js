@@ -72,10 +72,10 @@ import "./Form.css";
 //     transform: rotate(45deg);
 // }
 
-export default function Checkbox({text}){
+export default function Checkbox(props){
     return(
-        <label className="checkbox-wrapper">{text}
-                <input type="checkbox" className="checkbox"/>
+        <label className="checkbox-wrapper">{props.text}
+                <input type="checkbox" onChange={props.toggleTick} className="checkbox" />
                 <span className="checkmark"></span>
             </label>
     )

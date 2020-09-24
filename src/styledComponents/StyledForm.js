@@ -1,7 +1,6 @@
-import React from "react";
 import styled from "styled-components";
-import Checkbox from "./Checkbox";
 import LockImage from "../img/padlock.png";
+import {Link} from "react-router-dom";
 
 const FormWrapper = styled.div`
     max-width: 400px;
@@ -26,11 +25,17 @@ const Icon = styled.div`
     background-repeat: no-repeat;
 `;
 
+const NameInputWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
 const Input = styled.input`
     border-radius: 3px;
-    width: 100%;
+    width: ${(props) => (props.nameInput ? "48%" : "100%")};
     margin: 10px 0px;
     font-weight: 600;
+    outline: none;
 `;
 
 const TextInput = styled(Input)`
@@ -42,49 +47,33 @@ const TextInput = styled(Input)`
     box-sizing: border-box;
 `;
 
-const ButtonInput = styled(Input)`
+const SubmitInput = styled(Input)`
     background-color: #90CAF9;
     border: none; 
     padding: 8px 0px;
-    font-size: 11px;
-    outline: none; 
+    font-size: 11px; 
     cursor: pointer;
 `;
 
 const LinkWrapper = styled.div`
     width: 100%;
     font-size: 11px;
-    color: #90CAF9;
     display: flex;
-    justify-content: space-between;
+    justify-content: ${(props) => (props.signIn ? "space-between" : "flex-end")};
     margin-bottom: 30px;
 `;
 
-const LinkContent = styled.a`
+const LinkContent = styled(Link)`
     display: inline-block;
     cursor: pointer;
     text-decoration: none;
+    color: #90CAF9;
 `;
 
 const Footer = styled.p`
     color: #979797;
     font-size: 11px;
+    margin-block-end: 0em;
 `;
 
-export default function Form({title, checkboxText, linkContent}){
-    return(
-        <FormWrapper>
-            <Icon></Icon>
-            <p>{title}</p>
-            <TextInput type="text" placeholder="Email Address*"/>
-            <TextInput type="text" placeholder="Password*"/>
-            <Checkbox text={checkboxText} />
-            <ButtonInput type="button" value={title.toUpperCase()} />
-            <LinkWrapper>
-                <LinkContent>{linkContent}</LinkContent>
-                <LinkContent>Don't have an account? Sign Up</LinkContent>
-            </LinkWrapper>
-            <Footer>Copyright © Your website 2020</Footer>
-        </FormWrapper>
-    )
-}
+export {FormWrapper, Icon, NameInputWrapper, TextInput, SubmitInput, LinkWrapper, LinkContent, Footer};
