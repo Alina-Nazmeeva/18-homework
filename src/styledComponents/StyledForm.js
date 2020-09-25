@@ -12,6 +12,8 @@ const FormWrapper = styled.div`
     flex-direction: column;
     align-items: center;
     box-sizing: border-box;
+    border: 1px solid #474747;
+    border-radius: 3px;
 `;
 
 const Icon = styled.div`
