@@ -3,10 +3,6 @@ import {FormWrapper, Icon, NameInputWrapper, TextInput, SubmitInput, LinkWrapper
 import Checkbox from "./Checkbox";
 import {RenderIf} from "../../RenderIf";
 
-const nameReg = /\p{L}{3,}/u;
-const emailReg = /.{3,}@.{2,}\..{2,}/;
-const passwordReg = /^(?=.*?[A-Z])(?=.*?[a-z]).{8,}$/;
-
 export default class Form extends Component {
     state = {
         firstName: "",
@@ -16,7 +12,7 @@ export default class Form extends Component {
         checkbox: false
     }
 
-    componentDidMount() {
+    componentDidMount(){
         if(localStorage.getItem("rememberMe") === "true"){
             this.setState({
                 email: localStorage.email,
@@ -26,15 +22,19 @@ export default class Form extends Component {
         }
     }
 
-    validation = (target) => {
-        switch(target.id){
+    validation = (value, target) => {
+        const nameReg = /\p{L}{3,}/u;
+        const emailReg = /.{3,}@.{2,}\..{2,}/;
+        const passwordReg = /^(?=.*?[A-Z])(?=.*?[a-z]).{8,}$/;
+        
+        switch(target){
             case "firstName":
             case "lastName":
-                return nameReg.test(target.value);
+                return nameReg.test(value);
             case "email":
-                return emailReg.test(target.value);
+                return emailReg.test(value);
             case "password": 
-                return passwordReg.test(target.value);     
+                return passwordReg.test(value);     
             default:
                 break;
         }
@@ -44,7 +44,7 @@ export default class Form extends Component {
         this.setState({
           [event.target.id]: event.target.value
         });
-        event.target.style.borderColor = this.validation(event.target) ? "green" : "red";
+        event.target.style.borderColor = this.validation(event.target.value, event.target.id) ? "green" : "red";
     }
 
     toggleTick = (event) => {
@@ -57,34 +57,32 @@ export default class Form extends Component {
     }
 
     handleSubmit = () => {
-        switch(this.props.location.pathname){
-            case "/signin":
-                if((localStorage.getItem("email") === this.state.email) &&
-                    (localStorage.getItem("password") === this.state.password)){
-                        if(this.state.checkbox === true){
-                            localStorage.setItem("rememberMe", this.state.checkbox.toString());
-                        }
-                        this.props.history.push("/welcome");
-                } else {
-                    alert("Incorrect email or password");
-                }
-                break;
-            case "/signup":
-                if(nameReg.test(this.state.firstName) && nameReg.test(this.state.lastName) && 
-                    emailReg.test(this.state.email) && passwordReg.test(this.state.password)){
-                        localStorage.setItem("email", this.state.email);
-                        localStorage.setItem("password", this.state.password);
-                        this.props.history.push("/");
-                } else if(!nameReg.test(this.state.firstName) || !nameReg.test(this.state.lastName)){
-                    alert("Name must contain at least 3 letters");
-                } else if(!emailReg.test(this.state.email)){
-                    alert("Wrong email");
-                } else if(!passwordReg.test(this.state.password)){
-                    alert("Password must contain at least 1 uppercase letter and 1 lowercase letter");
-                }
-                break;
-            default:
-                break;
+        if(this.props.location.pathname === "/signin"){
+            if((localStorage.getItem("email") === this.state.email) &&
+                (localStorage.getItem("password") === this.state.password)){
+                    if(this.state.checkbox === true){
+                        localStorage.setItem("rememberMe", this.state.checkbox.toString());
+                    }
+                    this.props.history.push("/welcome");
+            } else {
+                alert("Incorrect email or password");
+            }
+        } else if(this.props.location.pathname === "/signup"){
+            if (this.validation(this.state.firstName, "firstName") && 
+                this.validation(this.state.lastName, "lastName") && 
+                this.validation(this.state.email, "email") && 
+                this.validation(this.state.password, "password")){
+                    localStorage.setItem("email", this.state.email);
+                    localStorage.setItem("password", this.state.password);
+                    this.props.history.push("/");
+            } else if  (!this.validation(this.state.firstName, "firstName") || 
+                        !this.validation(this.state.lastName, "lastName")){
+                            alert("Name must contain at least 3 letters");
+            } else if(!this.validation(this.state.email)){
+                alert("Wrong email");
+            } else if(!this.validation(this.state.password, "password")){
+                alert("Password must contain at least 1 uppercase letter and 1 lowercase letter");
+            }
         }
     }
 
